@@ -17,13 +17,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @RequiredArgsConstructor
 public class HelloWorldJobConfig {
-    private final JobBuilderFactory jobBuilderFactory; // Job을 빌드해줄 빌더를 만들어준다.
-    private final StepBuilderFactory stepBuilderFactory; // Step을 빌드해줄 빌더를 만들어준다.
+    private final JobBuilderFactory jobBuilderFactory;
+    private final StepBuilderFactory stepBuilderFactory;
 
     @Bean
     public Job helloWorldJob() {
         return jobBuilderFactory.get("helloWorldJob")
-                .incrementer(new RunIdIncrementer()) // 강제로 메번 다른 ID를 실행할 때 마다 파라미터로 부여
+                .incrementer(new RunIdIncrementer()) // 강제로 매번 다른 ID를 실행할 때 파라미터로 부여
                 .start(helloWorldStep1())
                 .next(helloWorldStep2())
                 .build();
@@ -42,11 +42,10 @@ public class HelloWorldJobConfig {
     @StepScope
     public Tasklet helloWorldStep1Tasklet() {
         return (stepContribution, chunkContext) -> {
-            System.out.println("헬로월드!!!");
+            System.out.println("헬로월드 111111111111111!!!");
             return RepeatStatus.FINISHED;
         };
     }
-    // Job : 여러가지의 Step들로 구성
 
     @Bean
     @JobScope
@@ -61,10 +60,16 @@ public class HelloWorldJobConfig {
     @StepScope
     public Tasklet helloWorldStep2Tasklet() {
         return (stepContribution, chunkContext) -> {
-            System.out.println("헬로월드 222222222222222!!!");
+            System.out.println("헬로월드 222222222222!!!");
+
+            if(true){
+                throw new Exception("실패 : 헬로월드 태스클릿 2 실패");
+            }
+
             return RepeatStatus.FINISHED;
         };
     }
-    // Job : 여러가지의 Step들로 구성
+
+
 }
 
