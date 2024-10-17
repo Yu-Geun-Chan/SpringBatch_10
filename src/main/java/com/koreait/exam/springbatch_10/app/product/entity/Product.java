@@ -25,7 +25,7 @@ public class Product extends BaseEntity {
     private String makerShopName;
 
     @Builder.Default
-    @OneToMany(mappedBy = "produyct", cascade = ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "product", cascade = ALL, orphanRemoval = true)
     private List<ProductOption> productOptions = new ArrayList<>();
 
     public void addOption(ProductOption option) {
