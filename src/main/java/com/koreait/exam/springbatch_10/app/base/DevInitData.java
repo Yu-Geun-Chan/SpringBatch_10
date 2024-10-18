@@ -28,6 +28,19 @@ public class DevInitData {
             Member member3 = memberService.join("user3", password, "user3@test.com");
             Member member4 = memberService.join("user4", password, "user4@test.com");
 
+            // 만원 충전
+            memberService.addCash(member1, 10_000, "충전_무통장입금");
+            // 2만원 충전
+            memberService.addCash(member1, 20_000, "충전_무통장입금");
+            // 5천원 사용
+            memberService.addCash(member1, -5_000, "출금_일반");
+
+
+            long restCash = memberService.getRestCash(member1);
+
+            System.out.println("member1 RestCash : " + restCash);
+
+
             Product product1 = productService.create("반팔 1", 55000, "DDM-1",
                     Arrays.asList(new ProductOption("RED", "95"),
                             new ProductOption("RED", "100"),
@@ -47,6 +60,8 @@ public class DevInitData {
             cartService.addItem(member1, productOption__BLUE_95, 1); //productOption__BLUE_95  총 수량 1
 
             orderService.createFromCart(member1);
+
+
 
         };
     }

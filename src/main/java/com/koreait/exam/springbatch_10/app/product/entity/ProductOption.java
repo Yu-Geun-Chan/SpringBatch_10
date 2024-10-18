@@ -15,13 +15,25 @@ import static javax.persistence.FetchType.LAZY;
 @Entity
 @Getter
 @Setter
-@SuperBuilder
 @NoArgsConstructor
+@SuperBuilder
 @ToString(callSuper = true)
 public class ProductOption extends BaseEntity {
     private String color;
     private String size;
-    private Integer price;
+
+
+    private int price; // 권장 판매가 : 30,000
+    private int salePrice; // 실제 판매가 ㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅐ
+    private int wholesalePrice; // 도매가 < 30,000
+    private int payPrice; // 결제 금액
+    private int refundPrice; // 환불 금액
+    private int pgFee; // 결제대행사 수수료
+    private int refundQuantity; // 환불한 횟수
+    private boolean isPaid; // 결제 여부
+
+    private String displayColor;
+    private String displaySize;
 
     private boolean isSoldout; // 관련 옵션들의 판매불가 여부
     private int stockQuantity; // 보유 물건 갯수
@@ -31,8 +43,11 @@ public class ProductOption extends BaseEntity {
     private Product product;
 
     public ProductOption(String color, String size) {
+
         this.color = color;
+        this.displayColor = color;
         this.size = size;
+        this.displaySize = size;
     }
 
     public boolean isOrderable(int quantity) {
