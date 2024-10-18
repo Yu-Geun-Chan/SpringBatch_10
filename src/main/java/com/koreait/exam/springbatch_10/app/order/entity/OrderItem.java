@@ -31,14 +31,14 @@ public class OrderItem extends BaseEntity {
 
     private int quantity;
 
-    // 가격정보
-    private int price; // 권장 판매가 : 30,000
-    private int salePrice; // 실제 판매가
-    private int wholesalePrice; // 도매가 < 30,000
+    // 가격
+    private int price; // 권장 판매가 30000
+    private int salePrice; // 실제 판매가 40000
+    private int wholesalePrice; // 도매가 < 30000
     private int payPrice; // 결제 금액
     private int refundPrice; // 환불 금액
     private int pgFee; // 결제대행사 수수료
-    private int refundQuantity; // 환불한 횟수
+    private int refundQuantity; // 환불 한 갯수
     private boolean isPaid; // 결제 여부
 
     public OrderItem(ProductOption productOption, int quantity) {
@@ -50,12 +50,18 @@ public class OrderItem extends BaseEntity {
     }
 
     public int calculatePayPrice() {
-        payPrice = salePrice * quantity;
-        return payPrice;
+        return salePrice * quantity;
     }
 
     public void setPaymentDone() {
         this.payPrice = calculatePayPrice();
         this.isPaid = true;
+    }
+
+    public void setRefundDone() {
+        if (refundQuantity == quantity) return;
+
+        this.refundQuantity = quantity;
+        this.refundPrice = payPrice;
     }
 }
