@@ -3,6 +3,7 @@ package com.koreait.exam.springbatch_10.app.base;
 import com.koreait.exam.springbatch_10.app.cart.service.CartService;
 import com.koreait.exam.springbatch_10.app.member.entity.Member;
 import com.koreait.exam.springbatch_10.app.member.service.MemberService;
+import com.koreait.exam.springbatch_10.app.order.entity.Order;
 import com.koreait.exam.springbatch_10.app.order.service.OrderService;
 import com.koreait.exam.springbatch_10.app.product.entity.Product;
 import com.koreait.exam.springbatch_10.app.product.entity.ProductOption;
@@ -34,19 +35,20 @@ public class DevInitData {
             memberService.addCash(member1, 20_000, "충전_무통장입금");
             // 5천원 사용
             memberService.addCash(member1, -5_000, "출금_일반");
-
+            // 30만원 충전
+            memberService.addCash(member1, 300_000, "충전_무통장입금");
 
             long restCash = memberService.getRestCash(member1);
 
             System.out.println("member1 RestCash : " + restCash);
 
 
-            Product product1 = productService.create("반팔 1", 55000, "DDM-1",
+            Product product1 = productService.create("반팔 1", 55000,45000, "DDM-1",
                     Arrays.asList(new ProductOption("RED", "95"),
                             new ProductOption("RED", "100"),
                             new ProductOption("BLUE", "95"),
                             new ProductOption("BLUE", "100")));
-            Product product2 = productService.create("셔츠 1", 66000, "DDM-2",
+            Product product2 = productService.create("셔츠 1", 66000,40000, "DDM-2",
                     Arrays.asList(new ProductOption("WHITE", "95"),
                             new ProductOption("WHITE", "100"),
                             new ProductOption("BLACK", "95"),
@@ -59,10 +61,12 @@ public class DevInitData {
             cartService.addItem(member1, productOption__RED_95, 2); // productOption__RED_95 총 수량 3
             cartService.addItem(member1, productOption__BLUE_95, 1); //productOption__BLUE_95  총 수량 1
 
-            orderService.createFromCart(member1);
+            Order order1 = orderService.createFromCart(member1);
 
+            int order1PayPrice = order1.calculatePayPrice();
+            System.out.println("order1PayPrice : " + order1PayPrice);
 
-
+            orderService.payByRestCashOnly(order1);
         };
     }
 }
