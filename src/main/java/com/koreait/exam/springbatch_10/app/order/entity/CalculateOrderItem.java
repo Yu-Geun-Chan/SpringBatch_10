@@ -10,6 +10,8 @@ import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
+import java.time.LocalDateTime;
+
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
@@ -49,11 +51,24 @@ public class CalculateOrderItem extends BaseEntity {
     // 상품
     private String productName;
 
-    // 상품 옵션
-    private String productOptionColor;
-    private String productOptionSize;
-    private String productOptionDisplayColor;
-    private String productOptionDisplaySize;
+//    // 상품 옵션
+//    private String productOptionColor;
+//    private String productOptionSize;
+//    private String productOptionDisplayColor;
+//    private String productOptionDisplaySize;
+
+    // 상품 옵션을 묶은 것
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "color", column = @Column(name = "product_option_color")),
+            @AttributeOverride(name = "size", column = @Column(name = "product_option_size")),
+            @AttributeOverride(name = "displayColor", column = @Column(name = "product_option_displayColor")),
+            @AttributeOverride(name = "displaySize", column = @Column(name = "product_option_displaySize")),
+
+    })
+    private CalculateOrderItem.EmbProductOption embProductOption;
+
+    private LocalDateTime orderItemCreatedDate;
 
     public CalculateOrderItem(OrderItem orderItem) {
         this.orderItem = orderItem;
@@ -71,12 +86,33 @@ public class CalculateOrderItem extends BaseEntity {
 
         //상품
         productName = orderItem.getProductOption().getProduct().getName();
-        //상품 옵션
-        productOptionColor = orderItem.getProductOption().getColor();
-        productOptionSize = orderItem.getProductOption().getSize();
-        productOptionDisplayColor = orderItem.getProductOption().getDisplayColor();
-        productOptionDisplaySize = orderItem.getProductOption().getDisplaySize();
+//        //상품 옵션
+//        productOptionColor = orderItem.getProductOption().getColor();
+//        productOptionSize = orderItem.getProductOption().getSize();
+//        productOptionDisplayColor = orderItem.getProductOption().getDisplayColor();
+//        productOptionDisplaySize = orderItem.getProductOption().getDisplaySize();
 
+        // 상품 옵션을 묶은 것.
+        embProductOption = new EmbProductOption(orderItem.getProductOption());
 
+        // 주문 품목이 생성된 시간
+        orderItemCreatedDate = order.getCreateDate();
+    }
+
+    // 상품옵션을 묶음 단위로 가능
+    @Embeddable
+    @NoArgsConstructor
+    public static class EmbProductOption {
+        private String color;
+        private String size;
+        private String displayColor;
+        private String displaySize;
+
+        public EmbProductOption(ProductOption productOption) {
+            color = productOption.getColor();
+            size = productOption.getSize();
+            displayColor = productOption.getDisplayColor();
+            displaySize = productOption.getDisplaySize();
+        }
     }
 }
