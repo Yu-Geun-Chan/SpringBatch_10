@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
     Page<OrderItem> findAllByIdLessThan(Long orderItemId, Pageable pageable);
+
+    Page<OrderItem> findAllByIdBetween(Long fromId, Long toId, Pageable pageable);
 }
