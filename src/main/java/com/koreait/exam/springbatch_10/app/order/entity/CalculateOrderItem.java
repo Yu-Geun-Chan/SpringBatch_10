@@ -22,7 +22,7 @@ public class CalculateOrderItem extends BaseEntity {
 
     @ManyToOne(fetch = LAZY)
     @ToString.Exclude
-    @JoinColumn(foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)) // calculate_order_item 테이블에 설정된 외래키 제약 제거
+    @JoinColumn(foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private OrderItem orderItem;
 
     @ManyToOne(fetch = LAZY)
@@ -46,42 +46,37 @@ public class CalculateOrderItem extends BaseEntity {
     private int refundQuantity; // 환불 한 갯수
     private boolean isPaid; // 결제 여부
 
+    // 상품
+    private String productName;
+
+    // 상품 옵션
+    private String productOptionColor;
+    private String productOptionSize;
+    private String productOptionDisplayColor;
+    private String productOptionDisplaySize;
+
     public CalculateOrderItem(OrderItem orderItem) {
         this.orderItem = orderItem;
-        this.order = orderItem.getOrder();
-        this.productOption = orderItem.getProductOption();
-        this.quantity = orderItem.getQuantity();
-        this.price = orderItem.getPrice();
-        this.salePrice = orderItem.getSalePrice();
-        this.wholesalePrice = orderItem.getWholesalePrice();
-        this.payPrice = orderItem.getPayPrice();
-        this.refundPrice = orderItem.getRefundPrice();
-        this.pgFee = orderItem.getPgFee();
-        this.refundQuantity = orderItem.getRefundQuantity();
-        this.isPaid = orderItem.isPaid();
-    }
+        order = orderItem.getOrder();
+        productOption = orderItem.getProductOption();
+        quantity = orderItem.getQuantity();
+        price = orderItem.getPrice();
+        salePrice = orderItem.getSalePrice();
+        wholesalePrice = orderItem.getWholesalePrice();
+        payPrice = orderItem.getPayPrice();
+        refundPrice = orderItem.getRefundPrice();
+        pgFee = orderItem.getPgFee();
+        refundQuantity = orderItem.getRefundQuantity();
+        isPaid = orderItem.isPaid();
 
-    public CalculateOrderItem(ProductOption productOption, int quantity) {
-        this.productOption = productOption;
-        this.quantity = quantity;
-        this.price = productOption.getPrice();
-        this.salePrice = productOption.getSalePrice();
-        this.wholesalePrice = productOption.getWholesalePrice();
-    }
+        //상품
+        productName = orderItem.getProductOption().getProduct().getName();
+        //상품 옵션
+        productOptionColor = orderItem.getProductOption().getColor();
+        productOptionSize = orderItem.getProductOption().getSize();
+        productOptionDisplayColor = orderItem.getProductOption().getDisplayColor();
+        productOptionDisplaySize = orderItem.getProductOption().getDisplaySize();
 
-    public int calculatePayPrice() {
-        return salePrice * quantity;
-    }
 
-    public void setPaymentDone() {
-        this.payPrice = calculatePayPrice();
-        this.isPaid = true;
-    }
-
-    public void setRefundDone() {
-        if (refundQuantity == quantity) return;
-
-        this.refundQuantity = quantity;
-        this.refundPrice = payPrice;
     }
 }
