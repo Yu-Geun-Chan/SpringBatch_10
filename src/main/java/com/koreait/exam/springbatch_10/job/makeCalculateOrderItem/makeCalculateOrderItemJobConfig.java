@@ -33,12 +33,12 @@ import java.util.Collections;
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
-public class MakeCalculateOrderItemJobConfig {
+public class makeCalculateOrderItemJobConfig {
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
 
-    private final OrderItemRepository orderItemRepository; // 읽을 대상
-    private final CalculateOrderItemRepository calculateOrderItemRepository; // 쓸 대상
+    private final OrderItemRepository orderItemRepository;
+    private final CalculateOrderItemRepository calculateOrderItemRepository;
 
     @Bean
     public Job makeCalculateOrderItemJob(Step makeCalculateOrderItemStep1, CommandLineRunner initData) throws Exception {
@@ -64,18 +64,16 @@ public class MakeCalculateOrderItemJobConfig {
                 .writer(calculateOrderItemWriter)
                 .build();
     }
+
     @StepScope
     @Bean
-    public RepositoryItemReader<OrderItem> orderItemReader(
-            @Value("#{jobParameters['fromId']}") Long fromId,
-            @Value("#{jobParameters['toId']}") Long toId
-    ) {
+    public RepositoryItemReader<OrderItem> orderItemReader() {
         return new RepositoryItemReaderBuilder<OrderItem>()
                 .name("orderItemReader")
                 .repository(orderItemRepository)
-                .methodName("findAllByIdBetween")
+                .methodName("findAllByIsPaid")
                 .pageSize(100)
-                .arguments(Arrays.asList(fromId, toId))
+                .arguments(Arrays.asList(true))
                 .sorts(Collections.singletonMap("id", Sort.Direction.ASC))
                 .build();
     }

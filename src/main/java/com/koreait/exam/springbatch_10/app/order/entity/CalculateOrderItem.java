@@ -47,24 +47,17 @@ public class CalculateOrderItem extends BaseEntity {
     private int pgFee; // 결제대행사 수수료
     private int refundQuantity; // 환불 한 갯수
     private boolean isPaid; // 결제 여부
+    private LocalDateTime payDate; // 결제일
 
     // 상품
     private String productName;
 
-//    // 상품 옵션
-//    private String productOptionColor;
-//    private String productOptionSize;
-//    private String productOptionDisplayColor;
-//    private String productOptionDisplaySize;
-
-    // 상품 옵션을 묶은 것
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "color", column = @Column(name = "product_option_color")),
             @AttributeOverride(name = "size", column = @Column(name = "product_option_size")),
-            @AttributeOverride(name = "displayColor", column = @Column(name = "product_option_displayColor")),
-            @AttributeOverride(name = "displaySize", column = @Column(name = "product_option_displaySize")),
-
+            @AttributeOverride(name = "displayColor", column = @Column(name = "product_option_dispaly_color")),
+            @AttributeOverride(name = "displaySize", column = @Column(name = "product_option_dispaly_size")),
     })
     private CalculateOrderItem.EmbProductOption embProductOption;
 
@@ -83,23 +76,19 @@ public class CalculateOrderItem extends BaseEntity {
         pgFee = orderItem.getPgFee();
         refundQuantity = orderItem.getRefundQuantity();
         isPaid = orderItem.isPaid();
+        payDate = orderItem.getPayDate();
 
         //상품
         productName = orderItem.getProductOption().getProduct().getName();
-//        //상품 옵션
-//        productOptionColor = orderItem.getProductOption().getColor();
-//        productOptionSize = orderItem.getProductOption().getSize();
-//        productOptionDisplayColor = orderItem.getProductOption().getDisplayColor();
-//        productOptionDisplaySize = orderItem.getProductOption().getDisplaySize();
+        //상품 옵션
 
-        // 상품 옵션을 묶은 것.
+
         embProductOption = new EmbProductOption(orderItem.getProductOption());
 
-        // 주문 품목이 생성된 시간
-        orderItemCreatedDate = order.getCreateDate();
+        // 주문 품목이 생성된 시각
+        orderItemCreatedDate = orderItem.getCreateDate();
     }
 
-    // 상품옵션을 묶음 단위로 가능
     @Embeddable
     @NoArgsConstructor
     public static class EmbProductOption {
@@ -115,4 +104,5 @@ public class CalculateOrderItem extends BaseEntity {
             displaySize = productOption.getDisplaySize();
         }
     }
+
 }
